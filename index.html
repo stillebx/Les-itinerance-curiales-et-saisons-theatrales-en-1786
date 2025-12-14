@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les itinérances curiales en 1786</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Garamond', 'Georgia', serif;
+            background-color: #f5f2eb;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #f5f2eb;
+            padding: 20px 30px;
+            text-align: center;
+            border-bottom: 4px solid #c9a959;
+        }
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: normal;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .header h2 {
+            font-size: 1.1em;
+            font-weight: normal;
+            font-style: italic;
+            color: #c9a959;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 0.9em;
+            color: #bdc3c7;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        #map {
+            height: calc(100vh - 240px);
+            min-height: 500px;
+        }
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 12px;
+            line-height: 1.7;
+            max-width: 320px;
+        }
+        .legend h4 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #2c3e50;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .legend-item:hover {
+            background-color: #f0f0f0;
+        }
+        .legend-item.inactive {
+            opacity: 0.4;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+        .legend-text {
+            flex-grow: 1;
+        }
+        .legend-count {
+            font-size: 11px;
+            color: #666;
+            margin-left: 5px;
+        }
+        .footer {
+            background: #2c3e50;
+            color: #bdc3c7;
+            padding: 15px 20px;
+            font-size: 0.75em;
+            text-align: center;
+            line-height: 1.8;
+        }
+        .footer-source {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .footer a {
+            color: #c9a959;
+            text-decoration: none;
+        }
+        .footer .credits {
+            margin-top: 8px;
+            font-style: italic;
+            color: #95a5a6;
+        }
+        .leaflet-popup-content {
+            font-family: 'Garamond', 'Georgia', serif;
+            min-width: 220px;
+        }
+        .popup-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+        .popup-content {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .popup-content strong {
+            color: #34495e;
+        }
+        .popup-history {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-left: 3px solid #c9a959;
+            font-style: italic;
+            font-size: 12px;
+        }
+        .category-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        .next-destination {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #ccc;
+        }
+        .next-destination a {
+            color: #2980b9;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .next-destination a:hover {
+            text-decoration: underline;
+        }
+        /* Barre de recherche */
+        .search-control {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            min-width: 250px;
+        }
+        .search-control h4 {
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #2c3e50;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Garamond', 'Georgia', serif;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .search-results {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .search-result-item {
+            padding: 6px 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        .search-result-item:hover {
+            background-color: #f0f7ff;
+        }
+        .search-result-item .result-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .search-result-item .result-date {
+            color: #666;
+            font-size: 11px;
+        }
+        .no-results {
+            padding: 8px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Les itinérances curiales en 1786</h1>
+        <h2>Les saisons théâtrales sous l'Ancien Régime</h2>
+        <p>La saison théâtrale s'ouvrait à l'automne à Fontainebleau, où les troupes parisiennes venaient faire le service de cour devant le roi. Elle se poursuivait à Versailles en hiver jusqu'à Pâques.</p>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="footer">
+        <div class="footer-source">
+            <strong>Source des données :</strong> Caroline zum Kolk (éd.), <em>Itinéraire de Louis XVI. Les lieux de séjour du roi (1774-1789)</em>, Paris, Cour de France.fr, 2020.<br/>
+            Données publiées d'après l'itinéraire constitué par Karima Mazingarbe dans le cadre d'un mémoire de master.
+            <div class="credits">Traitement des données et mise en forme par Elisa Broux</div>
+        </div>
+    </div>
+
+    <script>
+        // Initialisation de la carte centrée sur l'Île-de-France
+        const map = L.map('map').setView([48.75, 2.0], 9);
+        
+        // Fond de carte sobre et académique
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Définition des couleurs par catégorie
+        const colors = {
+            theatres: '#9b59b6',        // Violet
+            fontainebleau: '#e57373',   // Rouge clair
+            versailles: '#64b5f6',      // Bleu clair
+            chasse: '#81c784',          // Vert clair
+            residences: '#fff176',      // Jaune clair
+            normandie: '#d7ccc8'        // Beige
+        };
+
+        const categoryNames = {
+            theatres: 'Principaux théâtres curiaux fréquentés en 1786',
+            fontainebleau: 'Lieux fréquentés en saison d\'automne (Fontainebleau lieu de séjour principal)',
+            versailles: 'Lieux fréquentés en saison d\'hiver (Versailles lieu de séjour principal)',
+            chasse: 'Pavillons de chasse',
+            residences: 'Autres résidences royales',
+            normandie: 'Voyage en Normandie (juin 1786)'
+        };
+
+        // Données des théâtres curiaux
+        const theatres = [
+            {id: 'theatre-aile-neuve', name: 'Théâtre de l\'Aile neuve', lat: 48.8048, lng: 2.1204, category: 'theatres',
+             dates: 'Construit début 1786',
+             details: 'Construction du théâtre de l\'Aile neuve par Louis XVI et Marie-Antoinette au début de l\'année 1786. Ce nouveau théâtre devait accueillir les représentations de la cour à Versailles.',
+             history: 'Ce théâtre fut édifié pour remplacer l\'ancien Opéra royal jugé trop grand et coûteux à chauffer. Louis XVI et Marie-Antoinette souhaitaient un espace plus intime pour les spectacles de la cour.'},
+            {id: 'theatre-trianon', name: 'Théâtre de la Reine à Trianon', lat: 48.8145, lng: 2.1052, category: 'theatres',
+             dates: 'Saison d\'hiver 1786',
+             details: 'Le théâtre de la Reine à Trianon, lieu privilégié des représentations privées de Marie-Antoinette.',
+             history: 'Achevé en 1780, ce petit théâtre de 250 places permettait à la Reine de jouer elle-même la comédie avec ses proches. En 1786, Marie-Antoinette avait déjà renoncé à se produire sur scène suite aux critiques.'},
+            {id: 'theatre-fontainebleau', name: 'Théâtre de Fontainebleau', lat: 48.4020, lng: 2.7010, category: 'theatres',
+             dates: 'Saison d\'automne (11 octobre – 15 novembre 1786)',
+             details: 'Le Théâtre de Fontainebleau, salle des spectacles de la cour durant la saison d\'automne. Lieu de la représentation d\'Azémire le 4 novembre 1786.',
+             history: 'La salle de spectacle du château de Fontainebleau accueillait chaque automne les représentations données par les troupes parisiennes venues faire leur "service de cour". C\'est ici que fut représentée pour la première fois Azémire de Marie-Joseph Chénier, devant Louis XVI, le 4 novembre 1786.'}
+        ];
+
+        // Données des lieux avec catégorisation et dates corrigées
+        const places = [
+            // FONTAINEBLEAU - Saison théâtrale d'automne (octobre-novembre)
+            {id: 'fontainebleau', name: 'Fontainebleau', lat: 48.4049375, lng: 2.7015872, category: 'fontainebleau', 
+             dates: '11 octobre – 15 novembre 1786', visits: 1,
+             details: 'Résidence principale de la saison d\'automne. Représentation d\'Azémire de M.-J. Chénier le 4 novembre 1786.',
+             history: 'Depuis François Ier, Fontainebleau accueillait la cour chaque automne pour la saison de chasse. Louis XVI y séjournait régulièrement, appréciant particulièrement les forêts giboyeuses. Le château disposait d\'une salle de spectacle où les troupes parisiennes venaient se produire.',
+             nextDest: 'versailles'},
+            {id: 'avon', name: 'Avon', lat: 48.4048867, lng: 2.7207225, category: 'fontainebleau', 
+             dates: '26 octobre, 4 et 8 novembre 1786', visits: 3, nextDest: 'chailly'},
+            {id: 'chailly', name: 'Chailly-en-Bière', lat: 48.4669449, lng: 2.608877, category: 'fontainebleau', 
+             dates: '27 octobre et 10 novembre 1786', visits: 2, nextDest: 'pringy'},
+            {id: 'pringy', name: 'Pringy', lat: 48.521567, lng: 2.5587478, category: 'fontainebleau', 
+             dates: '18 octobre 1786', visits: 1, nextDest: 'fontaine-le-port'},
+            {id: 'fontaine-le-port', name: 'Fontaine-le-Port', lat: 48.4867207, lng: 2.757027, category: 'fontainebleau', 
+             dates: '21 octobre 1786', visits: 1, nextDest: 'lieusaint'},
+            {id: 'lieusaint', name: 'Lieusaint', lat: 48.6316608, lng: 2.5514783, category: 'fontainebleau', 
+             dates: '23 octobre 1786', visits: 1, nextDest: 'combs'},
+            {id: 'combs', name: 'Combs-la-Ville', lat: 48.6646994, lng: 2.564877, category: 'fontainebleau', 
+             dates: '23 octobre 1786', visits: 1, nextDest: 'mandres'},
+            {id: 'mandres', name: 'Mandres-les-Roses', lat: 48.7022193, lng: 2.5428063, category: 'fontainebleau', 
+             dates: '30 octobre 1786', visits: 1, nextDest: 'villiers-orge'},
+            {id: 'villiers-orge', name: 'Villiers-sur-Orge', lat: 48.6585041, lng: 2.3010786, category: 'fontainebleau', 
+             dates: '10 novembre 1786', visits: 1, nextDest: 'boissy'},
+            {id: 'boissy', name: 'Boissy-Saint-Léger', lat: 48.7479193, lng: 2.5124717, category: 'fontainebleau', 
+             dates: '22 novembre 1786', visits: 1, nextDest: 'versailles'},
+            
+            // VERSAILLES - Saison théâtrale d'hiver
+            {id: 'versailles', name: 'Versailles', lat: 48.8035403, lng: 2.1266886, category: 'versailles', 
+             dates: '1er janvier – 6 octobre, puis à partir du 15 novembre 1786', visits: 'multiple',
+             details: 'Résidence principale de la saison d\'hiver (décembre à Pâques). Séjours ponctués de voyages en d\'autres lieux.',
+             history: 'Versailles était le cœur du pouvoir royal. En 1786, Louis XVI y fit construire un nouveau théâtre dans l\'Aile neuve, jugeant l\'Opéra royal trop vaste. La cour y résidait principalement de décembre à Pâques, période durant laquelle les spectacles se succédaient.',
+             nextDest: 'glatigny'},
+            {id: 'fresnes', name: 'Fresnes', lat: 48.7546687, lng: 2.3227967, category: 'versailles', 
+             dates: '27 novembre 1786', visits: 1, nextDest: 'bievres'},
+            {id: 'verrieres', name: 'Verrières-le-Buisson', lat: 48.7467819, lng: 2.2653844, category: 'versailles', 
+             dates: '7 avril et 2 décembre 1786', visits: 2, nextDest: 'villejuif'},
+            {id: 'villejuif', name: 'Villejuif', lat: 48.7921098, lng: 2.3633048, category: 'versailles', 
+             dates: '4 décembre 1786', visits: 1, nextDest: 'bievres'},
+            {id: 'bievres', name: 'Bièvres', lat: 48.7547679, lng: 2.2170148, category: 'versailles', 
+             dates: '11 décembre 1786', visits: 1, nextDest: 'villeneuve-roi'},
+            {id: 'villeneuve-roi', name: 'Villeneuve-le-Roi', lat: 48.7350308, lng: 2.4077003, category: 'versailles', 
+             dates: '18 décembre 1786', visits: 1, nextDest: 'creteil'},
+
+            // PAVILLONS DE CHASSE - Vert clair
+            {id: 'glatigny', name: 'Glatigny', lat: 49.4961667, lng: 1.8952663, category: 'chasse', 
+             dates: '2 janvier 1786', visits: 1, nextDest: 'trappes'},
+            {id: 'trappes', name: 'Trappes', lat: 48.7760957, lng: 1.9988356, category: 'chasse', 
+             dates: '4 janvier, 2 mai, 26 août, 25 novembre et 29 décembre 1786', visits: 5, nextDest: 'st-germain'},
+            {id: 'st-germain', name: 'Saint-Germain-en-Laye', lat: 48.8990413, lng: 2.0942792, category: 'chasse', 
+             dates: 'À partir du 9 janvier 1786 (13 séjours)', visits: 13,
+             history: 'Ancienne résidence royale, Saint-Germain-en-Laye conservait une importance pour la chasse dans ses forêts. Louis XVI s\'y rendait fréquemment.',
+             nextDest: 'rocquencourt'},
+            {id: 'rocquencourt', name: 'Rocquencourt', lat: 48.833333, lng: 2.1063004, category: 'chasse', 
+             dates: '24 janvier, 22 février, 10 mars et 27 décembre 1786', visits: 4, nextDest: 'chambourcy'},
+            {id: 'la-celle', name: 'La Celle-Saint-Cloud', lat: 48.8478753, lng: 2.136145, category: 'chasse', 
+             dates: 'À partir du 13 février 1786 (11 visites)', visits: 11, nextDest: 'verrieres'},
+            {id: 'plaisir', name: 'Plaisir', lat: 48.817399, lng: 1.9476363, category: 'chasse', 
+             dates: '24 avril, 6 mai, 1er et 17 juillet, 9 septembre 1786', visits: 5, nextDest: 'st-remy'},
+            {id: 'st-remy', name: 'Saint-Rémy-lès-Chevreuse', lat: 48.7054888, lng: 2.071109, category: 'chasse', 
+             dates: '28 avril, 12 juillet et 6 octobre 1786', visits: 3, nextDest: 'guyancourt'},
+            {id: 'guyancourt', name: 'Guyancourt', lat: 48.7709414, lng: 2.0706084, category: 'chasse', 
+             dates: '2 mai 1786', visits: 1, nextDest: 'rambouillet'},
+            {id: 'rambouillet', name: 'Rambouillet', lat: 48.6452851, lng: 1.819207, category: 'chasse', 
+             dates: 'Séjours réguliers du 2 mai au 2 octobre 1786', visits: 'multiple',
+             details: 'Résidence de chasse acquise par Louis XVI en 1783.',
+             history: 'Louis XVI acquit le domaine de Rambouillet en 1783 pour ses forêts giboyeuses. Il y fit aménager une ferme modèle et une laiterie pour Marie-Antoinette. Le roi s\'y rendait très régulièrement pour chasser.',
+             nextDest: 'neuilly'},
+            {id: 'neuilly', name: 'Neuilly-sur-Seine', lat: 48.884683, lng: 2.2695658, category: 'chasse', 
+             dates: '9 mai 1786', visits: 1, nextDest: 'st-leger'},
+            {id: 'st-leger', name: 'Saint-Léger-en-Yvelines', lat: 48.7226014, lng: 1.7637028, category: 'chasse', 
+             dates: '15 mai 1786', visits: 1, nextDest: 'essarts'},
+            {id: 'essarts', name: 'Les Essarts-le-Roi', lat: 48.717601, lng: 1.8946206, category: 'chasse', 
+             dates: '18 mai et 26 juillet 1786', visits: 2, nextDest: 'perray'},
+            {id: 'perray', name: 'Le Perray-en-Yvelines', lat: 48.6924665, lng: 1.8538535, category: 'chasse', 
+             dates: 'À partir du 18 mai 1786 (11 visites)', visits: 11,
+             details: 'Pavillon de chasse de Saint-Hubert.',
+             history: 'Le pavillon de Saint-Hubert, construit sous Louis XV, était l\'un des rendez-vous de chasse favoris de Louis XVI dans la forêt de Rambouillet.',
+             nextDest: 'dourdan'},
+            {id: 'dourdan', name: 'Dourdan', lat: 48.5288442, lng: 2.0153689, category: 'chasse', 
+             dates: '22 mai 1786', visits: 1, nextDest: 'chandai'},
+            {id: 'gazeran', name: 'Gazeran', lat: 48.6348196, lng: 1.771981, category: 'chasse', 
+             dates: '28 août 1786', visits: 1, nextDest: 'orsay'},
+            {id: 'orsay', name: 'Orsay', lat: 48.699184, lng: 2.187457, category: 'chasse', 
+             dates: '29 août 1786', visits: 1, nextDest: 'ste-mesme'},
+            {id: 'ste-mesme', name: 'Sainte-Mesme', lat: 48.531728, lng: 1.9606419, category: 'chasse', 
+             dates: '1er et 5 septembre 1786', visits: 2, nextDest: 'st-nom'},
+            {id: 'st-nom', name: 'Saint-Nom-la-Bretèche', lat: 48.8641009, lng: 2.0205241, category: 'chasse', 
+             dates: '2 septembre 1786', visits: 1, nextDest: 'villepreux'},
+            {id: 'villepreux', name: 'Villepreux', lat: 48.8323013, lng: 2.007049, category: 'chasse', 
+             dates: '7 septembre 1786', visits: 1, nextDest: 'compiegne'},
+            {id: 'arcueil', name: 'Arcueil', lat: 48.8064996, lng: 2.3366502, category: 'chasse', 
+             dates: '15 septembre 1786', visits: 1, nextDest: 'saclay'},
+            {id: 'saclay', name: 'Saclay', lat: 48.7305162, lng: 2.172576, category: 'chasse', 
+             dates: '18 septembre 1786', visits: 1, nextDest: 'poigny'},
+            {id: 'poigny', name: 'Poigny-la-Forêt', lat: 48.6758342, lng: 1.752986, category: 'chasse', 
+             dates: '19 et 27 septembre, 2 octobre 1786', visits: 3, nextDest: 'rungis'},
+            {id: 'rungis', name: 'Rungis', lat: 48.7484048, lng: 2.3472665, category: 'chasse', 
+             dates: '20 septembre 1786', visits: 1, nextDest: 'chevilly'},
+            {id: 'chevilly', name: 'Chevilly-Larue', lat: 48.7714153, lng: 2.3469255, category: 'chasse', 
+             dates: '22 septembre et 27 novembre 1786', visits: 2, nextDest: 'thiais'},
+            {id: 'thiais', name: 'Thiais', lat: 48.7643664, lng: 2.391024, category: 'chasse', 
+             dates: '30 septembre 1786', visits: 1, nextDest: 'creteil'},
+            {id: 'creteil', name: 'Créteil', lat: 48.7771486, lng: 2.4530731, category: 'chasse', 
+             dates: '3 octobre et 21 décembre 1786', visits: 2, nextDest: 'davron'},
+            {id: 'davron', name: 'Davron', lat: 48.8651611, lng: 1.9466425, category: 'chasse', 
+             dates: '5 octobre 1786', visits: 1, nextDest: 'choisy'},
+            {id: 'boissiere', name: 'La Boissière-École', lat: 48.6818831, lng: 1.6415102, category: 'chasse', 
+             dates: '17 octobre 1786', visits: 1, nextDest: 'pringy'},
+            {id: 'gournay', name: 'Gournay-sur-Marne', lat: 48.8598434, lng: 2.576913, category: 'chasse', 
+             dates: '19 août 1786', visits: 1, nextDest: 'montrouge'},
+            {id: 'montrouge', name: 'Montrouge', lat: 48.8188544, lng: 2.3194375, category: 'chasse', 
+             dates: '22 août 1786', visits: 1, nextDest: 'gazeran'},
+            {id: 'poissy', name: 'Poissy', lat: 48.9274192, lng: 2.0426301, category: 'chasse', 
+             dates: '11 août 1786', visits: 1, nextDest: 'chambourcy'},
+            {id: 'jouy-josas', name: 'Jouy-en-Josas', lat: 48.76464, lng: 2.1684529, category: 'chasse', 
+             dates: '5 août 1786', visits: 1, nextDest: 'poissy'},
+            {id: 'chambourcy', name: 'Chambourcy', lat: 48.9058999, lng: 2.0396454, category: 'chasse', 
+             dates: '28 janvier, 7 et 17 août 1786', visits: 3, nextDest: 'gournay'},
+
+            // AUTRES RÉSIDENCES ROYALES - Jaune clair
+            {id: 'meudon', name: 'Meudon', lat: 48.8126688, lng: 2.2385432, category: 'residences', 
+             dates: 'À partir du 20 janvier 1786 (8 visites)', visits: 8,
+             history: 'Ancienne résidence du Grand Dauphin, fils de Louis XIV, Meudon servait de lieu de promenade et de chasse pour la famille royale.',
+             nextDest: 'la-celle'},
+            {id: 'st-cloud', name: 'Saint-Cloud', lat: 48.8437412, lng: 2.219344, category: 'residences', 
+             dates: '3 avril 1786', visits: 1,
+             details: 'Résidence acquise par Marie-Antoinette en 1785.',
+             history: 'Marie-Antoinette acheta le château de Saint-Cloud en 1785 pour disposer d\'une résidence personnelle proche de Paris. Cette acquisition suscita des critiques sur les dépenses de la Reine.',
+             nextDest: 'jouy-moutier'},
+            {id: 'jouy-moutier', name: 'Jouy-le-Moutier', lat: 49.0116, lng: 2.03194, category: 'residences', 
+             dates: '6 avril, 4 mai et 3 juillet 1786', visits: 3, nextDest: 'magny'},
+            {id: 'magny', name: 'Magny-les-Hameaux', lat: 48.724051, lng: 2.0839562, category: 'residences', 
+             dates: 'À partir du 15 avril 1786 (5 visites)', visits: 5, nextDest: 'plaisir'},
+            {id: 'paris', name: 'Paris', lat: 48.8588897, lng: 2.320041, category: 'residences', 
+             dates: '27 avril et 28 septembre 1786', visits: 2,
+             details: 'Visites officielles du roi à Paris.',
+             history: 'Louis XVI se rendait rarement à Paris, préférant Versailles. Ses visites dans la capitale étaient généralement officielles et protocolaires.',
+             nextDest: 'st-remy'},
+            {id: 'compiegne', name: 'Compiègne', lat: 49.4179497, lng: 2.8263171, category: 'residences', 
+             dates: '10-13 septembre 1786', visits: 1,
+             history: 'Compiègne était traditionnellement la résidence d\'été de la cour. Louis XVI y séjournait pour la chasse dans la forêt environnante.',
+             nextDest: 'arcueil'},
+            {id: 'st-denis', name: 'Saint-Denis', lat: 48.9383732, lng: 2.3627508, category: 'residences', 
+             dates: '10 septembre 1786', visits: 1,
+             history: 'La basilique Saint-Denis abritait les tombeaux des rois de France. Le roi s\'y rendait pour des cérémonies religieuses.',
+             nextDest: 'compiegne'},
+            {id: 'choisy', name: 'Choisy-le-Roi', lat: 48.7630238, lng: 2.4093664, category: 'residences', 
+             dates: 'À partir du 6 octobre 1786 (6 visites)', visits: 6, nextDest: 'soisy'},
+            {id: 'soisy', name: 'Soisy-sur-Seine', lat: 48.6502928, lng: 2.4490991, category: 'residences', 
+             dates: '6 octobre, 30 novembre et 7 décembre 1786', visits: 3, nextDest: 'villeneuve-st-georges'},
+            {id: 'brunoy', name: 'Brunoy', lat: 48.6979312, lng: 2.5044613, category: 'residences', 
+             dates: '8 et 30 octobre, 30 novembre et 7 décembre 1786', visits: 4, nextDest: 'fontainebleau'},
+            {id: 'villeneuve-st-georges', name: 'Villeneuve-Saint-Georges', lat: 48.7305272, lng: 2.44782, category: 'residences', 
+             dates: '7 et 8 octobre 1786', visits: 2, nextDest: 'brunoy'},
+            {id: 'hay', name: "L'Haÿ-les-Roses", lat: 48.7790514, lng: 2.3373021, category: 'residences', 
+             dates: '9 octobre et 4 décembre 1786', visits: 2, nextDest: 'fontainebleau'},
+
+            // VOYAGE EN NORMANDIE - Beige (juin 1786)
+            {id: 'chandai', name: 'Chandai', lat: 48.7534847, lng: 0.740002, category: 'normandie', 
+             dates: '21 juin 1786', visits: 1,
+             details: 'Étape du voyage vers Cherbourg.', nextDest: 'harcourt'},
+            {id: 'harcourt', name: 'Harcourt', lat: 49.1668691, lng: 0.7857071, category: 'normandie', 
+             dates: '21 et 22 juin 1786', visits: 2, nextDest: 'cherbourg'},
+            {id: 'cherbourg', name: 'Cherbourg-en-Cotentin', lat: 49.6425343, lng: -1.6249565, category: 'normandie', 
+             dates: '22-26 juin 1786', visits: 1,
+             details: 'Visite des travaux de la digue et du port militaire. Point culminant du voyage.',
+             history: 'Le voyage de Louis XVI à Cherbourg en juin 1786 fut l\'un des rares déplacements du roi en province. Il venait inspecter les travaux du port militaire, projet colossal destiné à rivaliser avec la puissance navale anglaise. Ce voyage fut un succès populaire.',
+             nextDest: 'montmartin'},
+            {id: 'montmartin', name: 'Montmartin-en-Graignes', lat: 49.2751306, lng: -1.1458554, category: 'normandie', 
+             dates: '26 juin 1786', visits: 1, nextDest: 'caen'},
+            {id: 'caen', name: 'Caen', lat: 49.1813403, lng: -0.3635615, category: 'normandie', 
+             dates: '26 et 27 juin 1786', visits: 2,
+             history: 'Caen accueillit Louis XVI avec enthousiasme lors de son passage. La ville était un important centre administratif et universitaire de Normandie.',
+             nextDest: 'honfleur'},
+            {id: 'honfleur', name: 'Honfleur', lat: 49.4197222, lng: 0.2338889, category: 'normandie', 
+             dates: '27 juin 1786', visits: 1, nextDest: 'le-havre'},
+            {id: 'le-havre', name: 'Le Havre', lat: 49.4938975, lng: 0.1079732, category: 'normandie', 
+             dates: '27 et 28 juin 1786', visits: 2,
+             history: 'Port majeur du commerce atlantique, Le Havre était essentiel pour le commerce colonial français.',
+             nextDest: 'rouen'},
+            {id: 'rouen', name: 'Rouen', lat: 49.4404591, lng: 1.0939658, category: 'normandie', 
+             dates: '28 juin 1786', visits: 1,
+             history: 'Capitale de la Normandie, Rouen était la deuxième ville du royaume par sa population et son activité économique.',
+             nextDest: 'gaillon'},
+            {id: 'gaillon', name: 'Gaillon', lat: 49.1605604, lng: 1.3336126, category: 'normandie', 
+             dates: '28 et 29 juin 1786', visits: 2,
+             details: 'Dernière étape avant le retour à Versailles.', nextDest: 'versailles'}
+        ];
+
+        // Fusion des théâtres et des lieux
+        const allPlaces = [...theatres, ...places];
+
+        // Création des groupes de calques pour la légende interactive
+        const layerGroups = {
+            theatres: L.layerGroup(),
+            fontainebleau: L.layerGroup(),
+            versailles: L.layerGroup(),
+            chasse: L.layerGroup(),
+            residences: L.layerGroup(),
+            normandie: L.layerGroup()
+        };
+
+        // État de visibilité par catégorie (théâtres visibles par défaut, autres masqués)
+        const visibility = {
+            theatres: true,
+            fontainebleau: false,
+            versailles: false,
+            chasse: false,
+            residences: false,
+            normandie: false
+        };
+
+        // Stockage des marqueurs par ID
+        const markersById = {};
+
+        // Fonction pour naviguer vers un lieu (affiche même si catégorie masquée)
+        function goToPlace(placeId) {
+            const marker = markersById[placeId];
+            if (marker) {
+                // Trouver la catégorie du lieu
+                const place = allPlaces.find(p => p.id === placeId);
+                if (place && !visibility[place.category]) {
+                    // Ajouter temporairement le marqueur à la carte
+                    marker.addTo(map);
+                }
+                map.setView(marker.getLatLng(), 12);
+                marker.openPopup();
+            }
+        }
+
+        // Fonction pour créer un marqueur
+        function createMarker(place) {
+            const color = colors[place.category];
+            const visitCount = typeof place.visits === 'number' ? place.visits : 5;
+            const isTheatre = place.category === 'theatres';
+            
+            const marker = L.circleMarker([place.lat, place.lng], {
+                radius: isTheatre ? 12 : (visitCount > 5 ? 10 : (visitCount > 2 ? 8 : 6)),
+                fillColor: color,
+                color: isTheatre ? '#6c3483' : '#333',
+                weight: isTheatre ? 3 : 1.5,
+                opacity: 1,
+                fillOpacity: 0.85
+            });
+
+            // Trouver le nom de la prochaine destination
+            const nextPlace = allPlaces.find(p => p.id === place.nextDest);
+            const nextDestName = nextPlace ? nextPlace.name : null;
+
+            let popupContent = `
+                <div class="popup-title">${place.name}</div>
+                <div class="popup-content">
+                    <strong>Dates :</strong> ${place.dates}<br/>
+                    ${typeof place.visits === 'number' && place.visits > 1 ? `<strong>Visites :</strong> ${place.visits}<br/>` : ''}
+                    ${place.details ? `<em>${place.details}</em><br/>` : ''}
+                    ${place.history ? `<div class="popup-history">${place.history}</div>` : ''}
+                    <span class="category-tag" style="background-color: ${color}; color: ${isTheatre ? '#fff' : '#333'};">${categoryNames[place.category]}</span>
+                    ${nextDestName ? `
+                    <div class="next-destination">
+                        <strong>Prochaine destination :</strong> 
+                        <a onclick="goToPlace('${place.nextDest}')">${nextDestName}</a>
+                    </div>` : ''}
+                </div>
+            `;
+            
+            marker.bindPopup(popupContent);
+            return marker;
+        }
+
+        // Ajout des marqueurs pour les théâtres
+        theatres.forEach(place => {
+            const marker = createMarker(place);
+            marker.addTo(layerGroups.theatres);
+            markersById[place.id] = marker;
+        });
+
+        // Ajout des marqueurs pour les autres lieux
+        places.forEach(place => {
+            const marker = createMarker(place);
+            marker.addTo(layerGroups[place.category]);
+            markersById[place.id] = marker;
+        });
+
+        // Ajout initial : uniquement les théâtres
+        layerGroups.theatres.addTo(map);
+
+        // Création de la barre de recherche
+        const searchControl = L.control({position: 'topleft'});
+        
+        searchControl.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'search-control');
+            div.innerHTML = `
+                <h4>🔍 Rechercher</h4>
+                <input type="text" class="search-input" placeholder="Lieu ou date...">
+                <div class="search-results"></div>
+            `;
+            
+            const input = div.querySelector('.search-input');
+            const resultsDiv = div.querySelector('.search-results');
+            
+            function performSearch() {
+                const query = input.value.toLowerCase().trim();
+                resultsDiv.innerHTML = '';
+                
+                if (query.length < 2) {
+                    return;
+                }
+                
+                const results = allPlaces.filter(p => 
+                    p.name.toLowerCase().includes(query) || 
+                    p.dates.toLowerCase().includes(query) ||
+                    (p.details && p.details.toLowerCase().includes(query)) ||
+                    (p.history && p.history.toLowerCase().includes(query))
+                );
+                
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = '<div class="no-results">Aucun résultat</div>';
+                    return;
+                }
+                
+                results.slice(0, 10).forEach(place => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.innerHTML = `
+                        <div class="result-name">${place.name}</div>
+                        <div class="result-date">${place.dates}</div>
+                    `;
+                    item.addEventListener('click', function() {
+                        goToPlace(place.id);
+                        input.value = '';
+                        resultsDiv.innerHTML = '';
+                    });
+                    resultsDiv.appendChild(item);
+                });
+            }
+            
+            input.addEventListener('input', performSearch);
+            
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = input.value.toLowerCase().trim();
+                    if (query.length >= 2) {
+                        const results = allPlaces.filter(p => 
+                            p.name.toLowerCase().includes(query) || 
+                            p.dates.toLowerCase().includes(query)
+                        );
+                        if (results.length > 0) {
+                            goToPlace(results[0].id);
+                            input.value = '';
+                            resultsDiv.innerHTML = '';
+                        }
+                    }
+                }
+            });
+            
+            // Empêcher la propagation des événements
+            L.DomEvent.disableClickPropagation(div);
+            L.DomEvent.disableScrollPropagation(div);
+            
+            return div;
+        };
+        
+        searchControl.addTo(map);
+
+        // Création de la légende interactive
+        const legend = L.control({position: 'topright'});
+        
+        legend.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = '<h4>Catégories de lieux</h4>';
+            
+            const categories = [
+                {key: 'theatres', name: 'Principaux théâtres curiaux fréquentés en 1786'},
+                {key: 'fontainebleau', name: 'Lieux fréquentés en saison d\'automne (Fontainebleau lieu de séjour principal)'},
+                {key: 'versailles', name: 'Lieux fréquentés en saison d\'hiver (Versailles lieu de séjour principal)'},
+                {key: 'chasse', name: 'Pavillons de chasse'},
+                {key: 'residences', name: 'Autres résidences royales'},
+                {key: 'normandie', name: 'Voyage en Normandie'}
+            ];
+            
+            // Comptage des lieux par catégorie
+            const counts = {
+                theatres: theatres.length
+            };
+            places.forEach(p => {
+                counts[p.category] = (counts[p.category] || 0) + 1;
+            });
+            
+            categories.forEach(cat => {
+                const item = L.DomUtil.create('div', 'legend-item', div);
+                item.setAttribute('data-category', cat.key);
+                
+                // Appliquer l'état initial (inactif sauf théâtres)
+                if (!visibility[cat.key]) {
+                    item.classList.add('inactive');
+                }
+                
+                item.innerHTML = `
+                    <span class="legend-color" style="background-color: ${colors[cat.key]};"></span>
+                    <span class="legend-text">${cat.name}</span>
+                    <span class="legend-count">(${counts[cat.key] || 0})</span>
+                `;
+                
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    visibility[cat.key] = !visibility[cat.key];
+                    
+                    if (visibility[cat.key]) {
+                        map.addLayer(layerGroups[cat.key]);
+                        item.classList.remove('inactive');
+                    } else {
+                        map.removeLayer(layerGroups[cat.key]);
+                        item.classList.add('inactive');
+                    }
+                });
+            });
+            
+            const note = L.DomUtil.create('p', '', div);
+            note.style.cssText = 'font-size: 10px; color: #888; margin-top: 10px; font-style: italic;';
+            note.textContent = 'Cliquez sur une catégorie pour l\'afficher/masquer';
+            
+            // Empêcher la propagation des événements de la légende à la carte
+            L.DomEvent.disableClickPropagation(div);
+            L.DomEvent.disableScrollPropagation(div);
+            
+            return div;
+        };
+        
+        legend.addTo(map);
+
+        // Ajout d'une ligne pour le voyage en Normandie
+        const normandieRoute = [
+            [48.8035403, 2.1266886],  // Versailles (départ)
+            [48.7534847, 0.740002],   // Chandai
+            [49.1668691, 0.7857071],  // Harcourt
+            [49.6425343, -1.6249565], // Cherbourg
+            [49.2751306, -1.1458554], // Montmartin
+            [49.1813403, -0.3635615], // Caen
+            [49.4197222, 0.2338889],  // Honfleur
+            [49.4938975, 0.1079732],  // Le Havre
+            [49.4404591, 1.0939658],  // Rouen
+            [49.1605604, 1.3336126],  // Gaillon
+            [48.8035403, 2.1266886]   // Retour Versailles
+        ];
+
+        const routeLine = L.polyline(normandieRoute, {
+            color: '#8d6e63',
+            weight: 2,
+            opacity: 0.6,
+            dashArray: '5, 10'
+        }).addTo(layerGroups.normandie);
+
+        routeLine.bindPopup('<strong>Voyage en Normandie</strong><br/>21-29 juin 1786<br/>Visite de Louis XVI à Cherbourg');
+    </script>
+</body>
+</html>
