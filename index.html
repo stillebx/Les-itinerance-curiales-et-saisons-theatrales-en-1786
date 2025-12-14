@@ -58,6 +58,32 @@
             max-width: 320px;
         }
         .legend h4 {
+            .legend-subtitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0 6px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.legend-subtitle .subtitle-text {
+    font-weight: bold;
+    font-size: 12px;
+    color: #2c3e50;
+}
+.legend-subtitle .toggle-all {
+    font-size: 11px;
+    color: #3498db;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+.legend-subtitle .toggle-all:hover {
+    background-color: #ebf5fb;
+}
+.legend-group {
+    margin-bottom: 5px;
+}
             margin-bottom: 10px;
             font-size: 14px;
             color: #2c3e50;
@@ -649,8 +675,126 @@ const visibility = {
         const legend = L.control({position: 'topright'});
         
         legend.onAdd = function(map) {
-            const div = L.DomUtil.create('div', 'legend');
-            div.innerHTML = '<h4>Catégories de lieux</h4>';
+    const div = L.DomUtil.create('div', 'legend');
+    
+    div.innerHTML = '<h4>Légende</h4>';
+    
+    // Sous-titre 1 : Saison théâtrale
+    const subtitle1 = L.DomUtil.create('div', 'legend-subtitle', div);
+    subtitle1.innerHTML = '<span class="subtitle-text">La saison théâtrale en 1786</span><span class="toggle-all" data-group="theatres">☑ Tout</span>';
+    
+    const theatreCategories = [
+        {key: 'theatres', name: 'Principaux théâtres curiaux'}
+    ];
+    
+    // Sous-titre 2 : Séjours de la cour
+    const subtitle2 = L.DomUtil.create('div', 'legend-subtitle', div);
+    subtitle2.innerHTML = '<span class="subtitle-text">Les séjours de la cour en 1786</span><span class="toggle-all" data-group="sejours">☑ Tout</span>';
+    
+    const sejourCategories = [
+        {key: 'fontainebleau', name: 'Lieux fréquentés en saison d\'automne (Fontainebleau lieu de séjour principal)'},
+        {key: 'versailles', name: 'Lieux fréquentés en saison d\'hiver (Versailles lieu de séjour principal)'},
+        {key: 'chasse', name: 'Pavillons de chasse'},
+        {key: 'residences', name: 'Autres résidences royales'},
+        {key: 'normandie', name: 'Voyage en Normandie'}
+    ];
+    
+    // Comptage des lieux par catégorie
+    const counts = {
+        theatres: theatres.length
+    };
+    places.forEach(p => {
+        counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+    
+    // Fonction pour créer un item de légende
+    function createLegendItem(cat, container) {
+        const item = L.DomUtil.create('div', 'legend-item', container);
+        item.setAttribute('data-category', cat.key);
+        
+        item.innerHTML = `
+            <span class="legend-color" style="background-color: ${colors[cat.key]};"></span>
+            <span class="legend-text">${cat.name}</span>
+            <span class="legend-count">(${counts[cat.key] || 0})</span>
+        `;
+        
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            visibility[cat.key] = !visibility[cat.key];
+            
+            if (visibility[cat.key]) {
+                map.addLayer(layerGroups[cat.key]);
+                item.classList.remove('inactive');
+            } else {
+                map.removeLayer(layerGroups[cat.key]);
+                item.classList.add('inactive');
+            }
+            updateToggleButtons();
+        });
+        
+        return item;
+    }
+    
+    // Container pour les théâtres
+    const theatreContainer = L.DomUtil.create('div', 'legend-group', div);
+    theatreContainer.setAttribute('data-group', 'theatres');
+    theatreCategories.forEach(cat => createLegendItem(cat, theatreContainer));
+    
+    // Container pour les séjours
+    const sejourContainer = L.DomUtil.create('div', 'legend-group', div);
+    sejourContainer.setAttribute('data-group', 'sejours');
+    sejourCategories.forEach(cat => createLegendItem(cat, sejourContainer));
+    
+    // Fonction pour mettre à jour les boutons "Tout"
+    function updateToggleButtons() {
+        const theatreKeys = theatreCategories.map(c => c.key);
+        const sejourKeys = sejourCategories.map(c => c.key);
+        
+        const allTheatresVisible = theatreKeys.every(k => visibility[k]);
+        const allSejoursVisible = sejourKeys.every(k => visibility[k]);
+        
+        div.querySelector('[data-group="theatres"]').textContent = allTheatresVisible ? '☑ Tout' : '☐ Tout';
+        div.querySelector('[data-group="sejours"]').textContent = allSejoursVisible ? '☑ Tout' : '☐ Tout';
+    }
+    
+    // Gestionnaire pour "Tout sélectionner/désélectionner"
+    div.querySelectorAll('.toggle-all').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const group = this.getAttribute('data-group');
+            const keys = group === 'theatres' 
+                ? theatreCategories.map(c => c.key)
+                : sejourCategories.map(c => c.key);
+            
+            const allVisible = keys.every(k => visibility[k]);
+            const newState = !allVisible;
+            
+            keys.forEach(key => {
+                visibility[key] = newState;
+                if (newState) {
+                    map.addLayer(layerGroups[key]);
+                } else {
+                    map.removeLayer(layerGroups[key]);
+                }
+                const item = div.querySelector(`[data-category="${key}"]`);
+                if (item) {
+                    item.classList.toggle('inactive', !newState);
+                }
+            });
+            
+            updateToggleButtons();
+        });
+    });
+    
+    const note = L.DomUtil.create('p', '', div);
+    note.style.cssText = 'font-size: 10px; color: #888; margin-top: 10px; font-style: italic;';
+    note.textContent = 'Cliquez sur une catégorie pour l\'afficher/masquer';
+    
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
+    
+    return div;
+};
             
             const categories = [
                 {key: 'theatres', name: 'Principaux théâtres curiaux fréquentés en 1786'},
