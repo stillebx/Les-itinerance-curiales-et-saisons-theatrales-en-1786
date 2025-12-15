@@ -22,26 +22,52 @@ En 1786, Louis XVI fit construire le Théâtre de l'Aile neuve à Versailles, de
 ## 🗺️ Fonctionnalités
 
 ### Navigation
-- **Carte interactive** : Visualisation des lieux sur une carte de l'Île-de-France et de la Normandie
+- **Carte interactive** : Visualisation des lieux sur une carte centrée sur Versailles
 - **Marqueurs colorés** : Chaque catégorie de lieu possède sa propre couleur
-- **Popups informatifs** : Cliquez sur un marqueur pour obtenir des détails historiques
-- **Navigation entre lieux** : Suivez l'itinéraire du roi grâce aux liens "Prochaine destination"
+- **Taille des marqueurs** : Proportionnelle au nombre de jours passés (échelle logarithmique)
+- **Popups informatifs** : Cliquez sur un marqueur pour obtenir des détails historiques (nombre de visites, dates, contexte historique)
+- **Effet de pulse** : Les marqueurs clignotent brièvement lorsqu'ils deviennent actifs dans la timeline
+
+### Timeline interactive
+- **Curseur temporel** : Naviguez dans le temps le long de l'année 1786
+- **Affichage de la date** : Date courante affichée au format "Jour Mois Année"
+- **Bouton play/pause** : Animation automatique de la timeline avec changement d'icône selon l'état
+- **Contrôle de vitesse** : Vitesse d'animation réglable (x1, x5, x10)
+- **Mode historique** : Option pour garder visibles les lieux déjà visités (avec effet de pulse sur les nouveaux)
+- **Activation/désactivation** : Toggle pour activer ou désactiver complètement la timeline
+- **Filtrage temporel** : Affichez uniquement les lieux visités à la date sélectionnée
 
 ### Recherche
-- **Barre de recherche** : Recherchez un lieu par son nom ou par date
+- **Barre de recherche** : Recherchez un lieu par son nom, date ou contexte historique
+- **Recherche par date** : Formats supportés (exemples) :
+  - `01/01`, `15/06` (jour/mois)
+  - `01/01/1786` (date complète)
+  - `janvier`, `juin` (nom du mois)
+  - `15 juin` (jour + mois)
 - **Résultats en temps réel** : Les résultats s'affichent au fur et à mesure de la saisie
+- **Navigation directe** : Cliquez sur un résultat pour centrer la carte et ouvrir la popup du lieu
 
 ### Légende interactive
 - **Filtrage par catégorie** : Affichez ou masquez les différentes catégories de lieux
 - **Compteurs** : Nombre de lieux par catégorie
-- **Sélection groupée** : Activez/désactivez tous les lieux d'une saison en un clic
+- **Sélection groupée** : Activez/désactivez tous les lieux d'une section en un clic
+- **Organisation en sections** :
+  - La saison théâtrale en 1786
+  - Les séjours de la cour en 1786
+  - Autres séjours
 
 ### Catégories de lieux
-1. **Théâtres curiaux** (violet) - 3 lieux
+
+**La saison théâtrale en 1786 :**
+1. **Théâtres curiaux** (violet) - 3 lieux principaux (Versailles, Trianon, Fontainebleau)
+
+**Les séjours de la cour en 1786 :**
 2. **Saison d'automne** (rouge clair) - Lieux fréquentés pendant le séjour à Fontainebleau
 3. **Saison d'hiver** (bleu clair) - Lieux fréquentés pendant le séjour à Versailles
 4. **Pavillons de chasse** (vert clair) - Nombreux pavillons visités pour la chasse
 5. **Autres résidences royales** (jaune clair) - Meudon, Saint-Cloud, Compiègne, etc.
+
+**Autres séjours :**
 6. **Voyage en Normandie** (beige) - Itinéraire du voyage de juin 1786
 
 ## 🚀 Utilisation
@@ -63,6 +89,15 @@ cd itineraire-louis-xvi-saison-theatrale-1786
 
 Le projet est entièrement statique et peut être hébergé sur n'importe quel serveur web ou service d'hébergement statique (GitHub Pages, Netlify, Vercel, etc.).
 
+### Utilisation de la timeline
+
+1. **Activer la timeline** : Cochez la case "Activer la timeline" en bas de la carte
+2. **Naviguer manuellement** : Utilisez le curseur pour sélectionner une date
+3. **Mode automatique** : Cliquez sur le bouton play pour lancer l'animation
+4. **Ajuster la vitesse** : Utilisez les boutons x1, x5, x10 pour changer la vitesse de lecture
+5. **Mode historique** : Cochez "Garder l'historique des lieux" pour voir tous les lieux visités jusqu'à la date sélectionnée
+6. **Désactiver** : Décochez "Activer la timeline" pour revenir à l'affichage de tous les lieux
+
 ## 🛠️ Technologies utilisées
 
 - **HTML5** : Structure de la page
@@ -79,6 +114,12 @@ Le projet est entièrement statique et peut être hébergé sur n'importe quel s
 Données publiées d'après l'itinéraire constitué par Karima Mazingarbe dans le cadre d'un mémoire de master.
 
 **Traitement des données et mise en forme :** Elisa Broux
+
+### Traitement des données
+
+- **Format de dates interne** : Utilisation du format YYYYMMDD pour faciliter les calculs et le tri chronologique
+- **Calcul des visites réelles** : Les dates consécutives sont regroupées en une seule visite (ex: 3 jours consécutifs = 1 visite)
+- **Échelle logarithmique** : Les tailles des marqueurs suivent une échelle logarithmique pour représenter visuellement l'importance relative des séjours sans créer de marqueurs démesurés
 
 ## 📈 Statistiques
 
