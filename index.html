@@ -156,6 +156,20 @@
             display: block;
         }
 
+        /* Animation de mise en évidence pour les marqueurs réactivés */
+        .marker-blink {
+            animation: markerBlink 0.8s ease-out;
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+
+        @keyframes markerBlink {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.35); opacity: 0.3; }
+            60% { transform: scale(1.15); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         .legend-item.inactive {
             opacity: 0.4;
         }
@@ -1001,6 +1015,8 @@ const places = [
             const selectedDate = timelineDates[currentTimelineIndex];
             if (selectedDate === undefined) return;
 
+            const markersToBlink = [];
+
             allPlaces.forEach(place => {
                 const marker = markersById[place.id];
                 const markerDates = timelineDatesByPlace[place.id] || [];
@@ -1029,10 +1045,30 @@ const places = [
                     if (map.hasLayer(group) === false && visibility[place.category]) {
                         group.addTo(map);
                     }
+
+                    // Faire clignoter les lieux de la date courante pour signaler leur activation/réactivation
+                    if (timelineEnabled && markerDates.includes(selectedDate)) {
+                        markersToBlink.push(marker);
+                    }
                 } else if (group.hasLayer(marker)) {
                     group.removeLayer(marker);
                 }
             });
+
+            if (timelineEnabled && markersToBlink.length > 0) {
+                markersToBlink.forEach(triggerMarkerBlink);
+            }
+        }
+
+        // Fait clignoter brièvement un marqueur (SVG ou divIcon)
+        function triggerMarkerBlink(marker) {
+            const el = (marker.getElement && marker.getElement()) || marker._icon || marker._path;
+            if (!el) return;
+            // Redémarrer l'animation en forçant un reflow
+            el.classList.remove('marker-blink');
+            void el.getBoundingClientRect();
+            el.classList.add('marker-blink');
+            setTimeout(() => el.classList.remove('marker-blink'), 900);
         }
 
         // Fonction pour naviguer vers un lieu (affiche même si catégorie masquée)
