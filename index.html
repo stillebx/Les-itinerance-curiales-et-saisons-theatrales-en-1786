@@ -1216,8 +1216,30 @@ const places = [
                     // Rechercher dans les dates de visite
                     let datesMatch = false;
                     if (p.visitDates && Array.isArray(p.visitDates)) {
-                        const datesStr = p.visitDates.join(' ').toLowerCase();
-                        datesMatch = datesStr.includes(query);
+                        // Convertir les dates YYYYMMDD en formats lisibles pour la recherche
+                        const searchableDates = p.visitDates.map(dateInt => {
+                            const dateStr = dateInt.toString();
+                            const year = dateStr.substring(0, 4);
+                            const month = dateStr.substring(4, 6);
+                            const day = dateStr.substring(6, 8);
+                            
+                            // Créer différents formats de recherche
+                            const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                                              'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                            const monthName = monthNames[parseInt(month) - 1];
+                            
+                            return [
+                                `${day}/${month}`,           // 01/01
+                                `${day}/${month}/${year}`,   // 01/01/1786
+                                `${day}.${month}`,           // 01.01
+                                `${day}.${month}.${year}`,   // 01.01.1786
+                                `${day} ${monthName}`,       // 01 janvier
+                                monthName,                   // janvier
+                                dateStr                      // 17860101
+                            ].join(' ');
+                        }).join(' ').toLowerCase();
+                        
+                        datesMatch = searchableDates.includes(query);
                     }
                     
                     return nameMatch || datesMatch || detailsMatch || historyMatch;
