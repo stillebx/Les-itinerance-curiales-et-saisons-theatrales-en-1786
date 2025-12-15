@@ -1415,7 +1415,7 @@ const places = [
                         if (totalDays > 10) {
                             const firstDate = formatDateShort(place.visitDates[0]);
                             const lastDate = formatDateShort(place.visitDates[totalDays - 1]);
-                            dateDisplay = `${realVisits} visite${realVisits > 1 ? 's' : ''} (entre le ${firstDate} et le ${lastDate})`;
+                            dateDisplay = `${realVisits} visite${realVisits > 1 ? 's' : ''} (${totalDays} jour${totalDays > 1 ? 's' : ''}, entre le ${firstDate} et le ${lastDate})`;
                         } else {
                             dateDisplay = `${realVisits} visite${realVisits > 1 ? 's' : ''} (${totalDays} jour${totalDays > 1 ? 's' : ''})`;
                         }
