@@ -56,6 +56,7 @@
 
         .map-container {
             flex: 1 1 auto;
+            position: relative;
         }
 
         #map {
@@ -116,6 +117,7 @@
             width: 14px;
             height: 14px;
             flex-shrink: 0;
+            accent-color: #33475c;
         }
 
         .legend-subtitle .toggle-all label {
@@ -335,6 +337,114 @@
             color: #999;
             font-style: italic;
         }        
+
+        /* Timeline temporelle */
+        .timeline-toggle-container {
+            display: flex;
+        }
+        
+        .timeline-control {
+            background: white;
+            padding: 12px 14px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+            font-size: 13px;
+            min-width: 320px;
+            max-width: 440px;
+        }
+
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-play {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #dcdcdc;
+            background: #f7f7f7;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .timeline-play:hover {
+            background: #eef5ff;
+        }
+
+        .timeline-play.playing {
+            background: #c9e5ff;
+            border-color: #7eb8ff;
+        }
+
+        .timeline-play:not(.playing) span {
+            margin-top: -2px;
+            margin-left: 2px;
+        }
+
+        .timeline-play.playing span {
+            margin-top: -4px;
+            margin-left: 0px;
+        }
+
+        .timeline-date {
+            flex: 1;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .timeline-slider {
+            width: 100%;
+            accent-color: #c9a959;
+            cursor: pointer;
+        }
+
+        .timeline-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            color: #666;
+            font-size: 11px;
+        }
+
+        .timeline-history {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        .timeline-history input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #33475c;
+        }
+
+        .timeline-toggle {
+            flex: 1 1 auto;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        .timeline-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #33475c;
+        }
     </style>
 </head>
 
@@ -750,6 +860,81 @@
         // Fusion des théâtres et des lieux
         const allPlaces = [...theatres, ...places];
 
+        // --- Timeline : parsing des dates et plage temporelle ---
+        const monthMap = {
+            'janvier': 0, 'février': 1, 'mars': 2, 'avril': 3, 'mai': 4, 'juin': 5,
+            'juillet': 6, 'août': 7, 'septembre': 8, 'octobre': 9, 'novembre': 10, 'décembre': 11
+        };
+
+        function parseDateFromString(dateStr) {
+            if (!dateStr) return new Date(1786, 0, 1).getTime();
+            const lower = dateStr.toLowerCase();
+
+            // 21-29 juin 1786 -> prend le premier jour
+            const rangeMatch = lower.match(/(\d{1,2})\s*[-–]\s*\d{1,2}\s+(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s*1786/);
+            if (rangeMatch) {
+                const day = parseInt(rangeMatch[1], 10);
+                const month = monthMap[rangeMatch[2]] ?? 0;
+                return new Date(1786, month, day).getTime();
+            }
+
+            // 11 octobre – 15 novembre 1786 ou 11 octobre 1786
+            const standardMatch = lower.match(/(\d{1,2})\s*(?:er)?\s*(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)/);
+            if (standardMatch) {
+                const day = parseInt(standardMatch[1], 10);
+                const month = monthMap[standardMatch[2]] ?? 0;
+                return new Date(1786, month, day).getTime();
+            }
+
+            // Mois seul + année
+            const monthOnlyMatch = lower.match(/(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s*1786/);
+            if (monthOnlyMatch) {
+                const month = monthMap[monthOnlyMatch[1]] ?? 0;
+                return new Date(1786, month, 1).getTime();
+            }
+
+            // Défaut : début d'année
+            return new Date(1786, 0, 1).getTime();
+        }
+
+        function formatTimelineDate(ts) {
+            const date = new Date(ts);
+            const month = Object.keys(monthMap).find(key => monthMap[key] === date.getMonth()) || '';
+            return `${date.getDate()} ${month} 1786`.trim();
+        }
+
+        const timelineDatesByPlace = {};
+        const timelineDates = Array.from(new Set(allPlaces.map(p => {
+            const parsed = parseDateFromString(p.dates);
+            timelineDatesByPlace[p.id] = parsed;
+            return parsed;
+        }))).sort((a, b) => a - b);
+
+        let currentTimelineIndex = 0;
+        let timelineSlider = null;
+        let timelineDateLabel = null;
+        let timelinePlayButton = null;
+        let timelineInterval = null;
+        let timelineHistoryInput = null;
+        let showHistory = false;
+        let timelineEnableInput = null;
+        let timelineEnabled = false;
+
+        function updateTimelineUi(enabled) {
+            const control = document.querySelector('.timeline-control');
+            if (!control) return;
+            control.classList.toggle('timeline-disabled', !enabled);
+            if (timelineSlider) timelineSlider.disabled = !enabled;
+            if (timelinePlayButton) timelinePlayButton.disabled = !enabled;
+            if (timelineHistoryInput) timelineHistoryInput.disabled = !enabled;
+        }
+
+        function setPlayIcon(isPlaying) {
+            if (!timelinePlayButton) return;
+            timelinePlayButton.querySelector('span').textContent = isPlaying ? '⏸' : '▶';
+            timelinePlayButton.setAttribute('aria-label', isPlaying ? 'Pause' : 'Lecture');
+        }
+
         // Création des groupes de calques pour la légende interactive
         const layerGroups = {
             theatres: L.layerGroup(),
@@ -773,6 +958,37 @@
         // Stockage des marqueurs par ID
         const markersById = {};
 
+        // Applique la double contrainte : visibilité par catégorie + position dans la timeline
+        function updateMarkersVisibility() {
+            const selectedDate = timelineDates[currentTimelineIndex];
+            if (selectedDate === undefined) return;
+
+            allPlaces.forEach(place => {
+                const marker = markersById[place.id];
+                const markerDate = timelineDatesByPlace[place.id];
+                const group = layerGroups[place.category];
+                const isTheatre = place.category === 'theatres';
+                const shouldBeVisible = visibility[place.category] && (
+                    isTheatre || !timelineEnabled
+                        ? true
+                        : (showHistory ? markerDate <= selectedDate : markerDate === selectedDate)
+                );
+
+                if (!marker || !group) return;
+
+                if (shouldBeVisible) {
+                    if (!group.hasLayer(marker)) {
+                        group.addLayer(marker);
+                    }
+                    if (map.hasLayer(group) === false && visibility[place.category]) {
+                        group.addTo(map);
+                    }
+                } else if (group.hasLayer(marker)) {
+                    group.removeLayer(marker);
+                }
+            });
+        }
+
         // Fonction pour naviguer vers un lieu (affiche même si catégorie masquée)
         function goToPlace(placeId) {
             const marker = markersById[placeId];
@@ -783,8 +999,45 @@
                     // Ajouter temporairement le marqueur à la carte
                     marker.addTo(map);
                 }
+                if (!map.hasLayer(marker)) {
+                    marker.addTo(map);
+                }
                 map.setView(marker.getLatLng(), 12);
                 marker.openPopup();
+            }
+        }
+
+        function setTimelineIndex(index, syncSlider = true) {
+            if (!timelineDates.length) return;
+            currentTimelineIndex = Math.min(Math.max(index, 0), timelineDates.length - 1);
+            if (timelineDateLabel) {
+                timelineDateLabel.textContent = formatTimelineDate(timelineDates[currentTimelineIndex]);
+            }
+            if (syncSlider && timelineSlider) {
+                timelineSlider.value = currentTimelineIndex;
+            }
+            updateMarkersVisibility();
+        }
+
+        function startTimeline() {
+            if (timelineInterval || !timelineDates.length) return;
+            if (timelinePlayButton) timelinePlayButton.classList.add('playing');
+            setPlayIcon(true);
+            timelineInterval = setInterval(() => {
+                if (currentTimelineIndex >= timelineDates.length - 1) {
+                    stopTimeline();
+                    return;
+                }
+                setTimelineIndex(currentTimelineIndex + 1);
+            }, 1200);
+        }
+
+        function stopTimeline() {
+            if (timelinePlayButton) timelinePlayButton.classList.remove('playing');
+            setPlayIcon(false);
+            if (timelineInterval) {
+                clearInterval(timelineInterval);
+                timelineInterval = null;
             }
         }
 
@@ -990,6 +1243,7 @@
                         item.classList.add('inactive');
                     }
                     updateToggleButtons();
+                    updateMarkersVisibility();
                 });
 
                 return item;
@@ -1070,6 +1324,7 @@
                 });
 
                 updateToggleButtons();
+                updateMarkersVisibility();
             }
 
             const note = L.DomUtil.create('p', '', div);
@@ -1083,6 +1338,106 @@
         };
 
         legend.addTo(map);
+
+        // Contrôle timeline
+        const timelineControl = L.control({ position: 'bottomleft' });
+
+        timelineControl.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'timeline-control leaflet-control');
+
+            const minLabel = timelineDates.length ? formatTimelineDate(timelineDates[0]) : '';
+            const maxLabel = timelineDates.length ? formatTimelineDate(timelineDates[timelineDates.length - 1]) : '';
+
+            div.innerHTML = `
+                <div class="timeline-toggle-container">
+                    <label class="timeline-toggle">
+                        <input type="checkbox" class="timeline-enable-input">
+                        Activer la timeline
+                    </label>
+                    <label class="timeline-history">
+                        <input type="checkbox" class="timeline-history-input">
+                        Garder l'historique
+                    </label>
+                </div>
+                <div class="timeline-header">
+                    <button class="timeline-play" title="Lecture/Pause"><span>▶</span></button>
+                    <div class="timeline-date"></div>
+                </div>
+                <input type="range" class="timeline-slider" min="0" max="${Math.max(timelineDates.length - 1, 0)}" value="${currentTimelineIndex}">
+                <div class="timeline-scale">
+                    <span>${minLabel}</span>
+                    <span>${maxLabel}</span>
+                </div>
+            `;
+
+            timelineSlider = div.querySelector('.timeline-slider');
+            timelineDateLabel = div.querySelector('.timeline-date');
+            timelinePlayButton = div.querySelector('.timeline-play');
+            timelineHistoryInput = div.querySelector('.timeline-history-input');
+            timelineEnableInput = div.querySelector('.timeline-enable-input');
+
+            // Appliquer l'état initial désactivé
+            if (timelineEnableInput) {
+                timelineEnableInput.checked = timelineEnabled;
+            }
+            updateTimelineUi(timelineEnabled);
+
+            if (timelineDateLabel && timelineDates.length) {
+                timelineDateLabel.textContent = formatTimelineDate(timelineDates[currentTimelineIndex]);
+            }
+            setPlayIcon(false);
+
+            if (timelineSlider) {
+                timelineSlider.addEventListener('input', (e) => {
+                    stopTimeline();
+                    setTimelineIndex(Number(e.target.value), false);
+                });
+            }
+
+            if (timelinePlayButton) {
+                timelinePlayButton.addEventListener('click', () => {
+                    if (timelineInterval) {
+                        stopTimeline();
+                    } else {
+                        // Repart de la date courante jusqu'à la fin
+                        if (currentTimelineIndex >= timelineDates.length - 1) {
+                            setTimelineIndex(0);
+                        }
+                        startTimeline();
+                    }
+                });
+            }
+
+            if (timelineHistoryInput) {
+                timelineHistoryInput.addEventListener('change', (e) => {
+                    showHistory = e.target.checked;
+                    updateMarkersVisibility();
+                });
+            }
+
+            if (timelineEnableInput) {
+                timelineEnableInput.addEventListener('change', (e) => {
+                    timelineEnabled = e.target.checked;
+                    if (!timelineEnabled) {
+                        stopTimeline();
+                    }
+                    updateTimelineUi(timelineEnabled);
+                    updateMarkersVisibility();
+                });
+            }
+
+            L.DomEvent.disableClickPropagation(div);
+            L.DomEvent.disableScrollPropagation(div);
+
+            return div;
+        };
+
+        timelineControl.addTo(map);
+        setTimelineIndex(currentTimelineIndex);
+        if (!timelineEnabled) {
+            updateMarkersVisibility();
+        }
+        updateTimelineUi(timelineEnabled);
 
         // Ajout d'une ligne pour le voyage en Normandie
         const normandieRoute = [
