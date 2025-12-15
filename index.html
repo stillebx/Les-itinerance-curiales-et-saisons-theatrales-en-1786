@@ -699,8 +699,9 @@ const places = [
         visitDates: ['17860124','17860222','17860310','17861227']
     },
     {
-        id: 'la-celle', name: 'La Celle-Saint-Cloud', lat: 48.8478753, lng: 2.136145, category: 'chasse',
-        visitDates: ['17860213','17860322','17860331','17860421','17861230']
+        id: 'la-celle', name: 'La Celle-Saint-Cloud', lat: 48.85197291650158, lng: 2.1405906946648714, category: 'chasse',
+        visitDates: ['17860213','17860322','17860331','17860421','17861230'],
+        latlngVerified: true
     },
     {
         id: 'plaisir', name: 'Plaisir', lat: 48.817399, lng: 1.9476363, category: 'chasse',
@@ -738,8 +739,9 @@ const places = [
         visitDates: ['17860828']
     },
     {
-        id: 'orsay', name: 'Orsay', lat: 48.699184, lng: 2.187457, category: 'chasse',
-        visitDates: ['17860829']
+        id: 'orsay', name: 'Orsay', lat: 48.697658468786294, lng: 2.1899877024861154, category: 'chasse',
+        visitDates: ['17860829'],
+        latlngVerified: true
     },
     {
         id: 'ste-mesme', name: 'Sainte-Mesme', lat: 48.531728, lng: 1.9606419, category: 'chasse',
@@ -884,10 +886,11 @@ const places = [
         latlngVerified: true
     },
     {
-        id: 'cherbourg', name: 'Cherbourg-en-Cotentin', lat: 49.6425343, lng: -1.6249565, category: 'normandie',
+        id: 'cherbourg', name: 'Cherbourg-en-Cotentin', lat: 49.655778138925584, lng: -1.63536823180084, category: 'normandie',
         visitDates: ['17860622','17860623','17860624','17860625','17860626'],
         details: 'Visite des travaux de la digue et du port militaire. Point culminant du voyage.',
-        history: 'Le voyage de Louis XVI à Cherbourg en juin 1786 fut l\'un des rares déplacements du roi en province.'
+        history: 'Le voyage de Louis XVI à Cherbourg en juin 1786 fut l\'un des rares déplacements du roi en province.',
+        latlngVerified: true
     },
     {
         id: 'montmartin', name: 'Montmartin-en-Graignes', lat: 49.2751306, lng: -1.1458554, category: 'normandie',
@@ -904,9 +907,10 @@ const places = [
         visitDates: ['17860627']
     },
     {
-        id: 'le-havre', name: 'Le Havre', lat: 49.4938975, lng: 0.1079732, category: 'normandie',
+        id: 'le-havre', name: 'Le Havre', lat: 49.4857290969773, lng: 0.10698682195733893, category: 'normandie',
         visitDates: ['17860627','17860628'],
-        history: 'Port majeur du commerce atlantique, Le Havre était essentiel pour le commerce colonial français.'
+        history: 'Port majeur du commerce atlantique, Le Havre était essentiel pour le commerce colonial français.',
+        latlngVerified: true
     },
     {
         id: 'rouen', name: 'Rouen', lat: 49.4404591, lng: 1.0939658, category: 'normandie',
@@ -1754,11 +1758,11 @@ const places = [
             [48.80452438239178, 2.1215883760563514],  // Versailles (départ)
             [48.7534847, 0.740002],   // Chandai
             [49.173938600768544, 0.7863978614955963],  // Harcourt
-            [49.6425343, -1.6249565], // Cherbourg
+            [49.655778138925584, -1.63536823180084], // Cherbourg
             [49.2751306, -1.1458554], // Montmartin
             [49.186695373508485, -0.36301474616409674], // Caen
             [49.4197222, 0.2338889],  // Honfleur
-            [49.4938975, 0.1079732],  // Le Havre
+            [49.4857290969773, 0.10698682195733893],  // Le Havre
             [49.4404591, 1.0939658],  // Rouen
             [49.160903871171996, 1.329870183161747],  // Gaillon
             [48.80452438239178, 2.1215883760563514]   // Retour Versailles
