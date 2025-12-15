@@ -17,6 +17,9 @@
         body {
             font-family: 'Garamond', 'Georgia', serif;
             background-color: #f5f2eb;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         .header {
@@ -28,7 +31,7 @@
         }
 
         .header h1 {
-            font-size: 1.8em;
+            font-size: 24px;
             font-weight: normal;
             letter-spacing: 2px;
             margin-bottom: 5px;
@@ -36,7 +39,7 @@
         }
 
         .header h2 {
-            font-size: 1.1em;
+            font-size: 24px;
             font-weight: normal;
             font-style: italic;
             color: #c9a959;
@@ -44,16 +47,19 @@
         }
 
         .header p {
-            font-size: 0.9em;
+            font-size: 16px;
             color: #bdc3c7;
             max-width: 800px;
             margin: 0 auto;
             line-height: 1.5;
         }
 
+        .map-container {
+            flex: 1 1 auto;
+        }
+
         #map {
-            height: calc(100vh - 256px);
-            min-height: 500px;
+            height: 100%;
         }
 
         .legend {
@@ -135,6 +141,18 @@
         .legend-item:hover {
             background-color: #f0f0f0;
         }
+        /* Marqueur triangle pour les théâtres */
+        .theatre-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+        }
+        .theatre-icon .marker-triangle {
+            width: 0;
+            height: 0;
+            display: block;
+        }
 
         .legend-item.inactive {
             opacity: 0.4;
@@ -147,6 +165,20 @@
             margin-right: 10px;
             border: 2px solid rgba(0, 0, 0, 0.3);
             flex-shrink: 0;
+        }
+        .legend-color.legend-color-triangle {
+            width: 0;
+            height: 0;
+            border-top: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 14px solid #9b59b6; /* couleur surchargée en inline */
+            border-radius: 0;
+            margin-right: 10px;
+            margin-left: 2px;
+            transform: translateY(-1px);
+            line-height: 0;
+            display: block;
         }
 
         .legend-text {
@@ -163,7 +195,7 @@
             background: #2c3e50;
             color: #bdc3c7;
             padding: 15px 20px;
-            font-size: 0.75em;
+            font-size: 15px;
             text-align: center;
             line-height: 1.8;
         }
@@ -171,6 +203,7 @@
         .footer-source {
             max-width: 800px;
             margin: 0 auto;
+            line-height: 1.2em;
         }
 
         .footer a {
@@ -179,7 +212,7 @@
         }
 
         .footer .credits {
-            margin-top: 8px;
+
             font-style: italic;
             color: #95a5a6;
         }
@@ -199,7 +232,7 @@
         }
 
         .popup-content {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.6;
         }
 
@@ -213,14 +246,14 @@
             background-color: #f8f9fa;
             border-left: 3px solid #c9a959;
             font-style: italic;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         .category-tag {
             display: inline-block;
             padding: 2px 8px;
             border-radius: 3px;
-            font-size: 11px;
+            font-size: 13px;
             margin-top: 5px;
         }
 
@@ -246,7 +279,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            min-width: 250px;
+            min-width: 320px;
         }
 
         .search-control h4 {
@@ -261,7 +294,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-family: 'Garamond', 'Georgia', serif;
-            font-size: 13px;
+            font-size: 14px;
             margin-bottom: 5px;
         }
 
@@ -273,7 +306,7 @@
         .search-results {
             max-height: 200px;
             overflow-y: auto;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         .search-result-item {
@@ -294,14 +327,14 @@
 
         .search-result-item .result-date {
             color: #666;
-            font-size: 11px;
+            font-size: 12px;
         }
 
         .no-results {
             padding: 8px;
             color: #999;
             font-style: italic;
-        }
+        }        
     </style>
 </head>
 
@@ -313,7 +346,9 @@
             service de cour devant le roi. Elle se poursuivait à Versailles en hiver jusqu'à Pâques.</p>
     </div>
 
-    <div id="map"></div>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
 
     <div class="footer">
         <div class="footer-source">
@@ -759,14 +794,27 @@
             const visitCount = typeof place.visits === 'number' ? place.visits : 5;
             const isTheatre = place.category === 'theatres';
 
-            const marker = L.circleMarker([place.lat, place.lng], {
-                radius: isTheatre ? 12 : (visitCount > 5 ? 10 : (visitCount > 2 ? 8 : 6)),
-                fillColor: color,
-                color: isTheatre ? '#6c3483' : '#333',
-                weight: isTheatre ? 3 : 1.5,
-                opacity: 1,
-                fillOpacity: 0.85
-            });
+            let marker;
+            if (isTheatre) {
+                const size = 22;
+                const icon = L.divIcon({
+                    className: 'theatre-icon',
+                    html: `<div class="marker-triangle" style="border-left:${size / 2}px solid transparent; border-right:${size / 2}px solid transparent; border-bottom:${size}px solid ${color};"></div>`,
+                    iconSize: [size, size],
+                    iconAnchor: [size / 2, size / 2],
+                    popupAnchor: [0, -size / 2]
+                });
+                marker = L.marker([place.lat, place.lng], { icon });
+            } else {
+                marker = L.circleMarker([place.lat, place.lng], {
+                    radius: visitCount > 5 ? 10 : (visitCount > 2 ? 8 : 6),
+                    fillColor: color,
+                    color: '#333',
+                    weight: 1.5,
+                    opacity: 1,
+                    fillOpacity: 0.85
+                });
+            }
 
             // Trouver le nom de la prochaine destination
             const nextPlace = allPlaces.find(p => p.id === place.nextDest);
@@ -893,7 +941,7 @@
         legend.onAdd = function (map) {
             const div = L.DomUtil.create('div', 'legend');
 
-            div.innerHTML = '<h4>Légende</h4>';
+            // div.innerHTML = '<h4>Légende</h4>';
 
             // Comptage des lieux par catégorie
             const counts = {
@@ -920,8 +968,12 @@
                 const item = L.DomUtil.create('div', 'legend-item', container);
                 item.setAttribute('data-category', cat.key);
 
-                item.innerHTML = `
-            <span class="legend-color" style="background-color: ${colors[cat.key]};"></span>
+            const colorIcon = cat.key === 'theatres'
+                ? `<span class="legend-color legend-color-triangle" style="border-bottom-color: ${colors[cat.key]};"></span>`
+                : `<span class="legend-color" style="background-color: ${colors[cat.key]};"></span>`;
+
+            item.innerHTML = `
+            ${colorIcon}
             <span class="legend-text">${cat.name}</span>
             <span class="legend-count">(${counts[cat.key] || 0})</span>
         `;
@@ -1021,7 +1073,7 @@
             }
 
             const note = L.DomUtil.create('p', '', div);
-            note.style.cssText = 'font-size: 10px; color: #888; margin-top: 10px; font-style: italic;';
+            note.style.cssText = 'font-size: 11px; color: #888; margin-top: 10px; font-style: italic;';
             note.textContent = 'Cliquez sur une catégorie pour l\'afficher/masquer';
 
             L.DomEvent.disableClickPropagation(div);
