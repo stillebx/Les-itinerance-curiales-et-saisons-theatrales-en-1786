@@ -2,7 +2,7 @@
 
 Une carte interactive visualisant les déplacements de Louis XVI et de la cour en 1786, avec un focus particulier sur les saisons théâtrales sous l'Ancien Régime.
 
-<a href="https://stillebx.github.io/itineraire-louis-xvi-saison-theatrale-1786/" target="_blank" rel="noopener noreferrer">Consulter la carte</a>
+[Consulter la carte](https://stillebx.github.io/itineraire-louis-xvi-saison-theatrale-1786/)
 
 ## 📋 Description
 
