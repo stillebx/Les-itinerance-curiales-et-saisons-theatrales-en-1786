@@ -76,16 +76,69 @@ En 1786, Louis XVI fit construire le Théâtre de l'Aile neuve à Versailles, de
 
 ### Installation locale
 
-Aucune installation n'est nécessaire ! Il suffit d'ouvrir le fichier `index.html` dans un navigateur web moderne.
+**⚠️ Important :** Le projet nécessite un serveur web local pour fonctionner correctement (chargement des données JSON via `fetch()`).
+
+#### Option 1 : Python (recommandé - souvent déjà installé)
 
 ```bash
-# Clonez le dépôt
-git clone https://github.com/votre-utilisateur/itineraire-louis-xvi-saison-theatrale-1786.git
+# Python 3
+python -m http.server 8000
 
-# Ouvrez le fichier
-cd itineraire-louis-xvi-saison-theatrale-1786
-# Puis ouvrez index.html dans votre navigateur
+# Ou Python 2
+python -m SimpleHTTPServer 8000
 ```
+
+Puis ouvrez votre navigateur à l'adresse : `http://localhost:8000`
+
+#### Option 2 : Node.js (avec http-server)
+
+```bash
+# Installer http-server globalement (une seule fois)
+npm install -g http-server
+
+# Lancer le serveur
+http-server -p 8000
+```
+
+Puis ouvrez votre navigateur à l'adresse : `http://localhost:8000`
+
+#### Option 3 : PHP (si installé)
+
+```bash
+php -S localhost:8000
+```
+
+Puis ouvrez votre navigateur à l'adresse : `http://localhost:8000`
+
+#### Option 4 : VS Code Live Server
+
+1. Installez l'extension "Live Server" dans VS Code
+2. Clic droit sur `index.html` → "Open with Live Server"
+
+#### Option 5 : Autres outils
+
+- **npx serve** : `npx serve .`
+- **Deno** : `deno run --allow-net --allow-read https://deno.land/std/http/file_server.ts`
+- **Ruby** : `ruby -run -e httpd . -p 8000`
+
+#### Option 6 : Scripts automatiques
+
+Des scripts sont fournis dans le dossier `scripts/` pour faciliter le démarrage :
+
+**Windows :**
+```bash
+# Depuis la racine du projet
+.\scripts\start-server.bat
+```
+
+**Linux / Mac :**
+```bash
+# Depuis la racine du projet
+chmod +x scripts/start-server.sh
+./scripts/start-server.sh
+```
+
+⚠️ **Important :** Les scripts doivent être exécutés depuis la racine du projet (où se trouve `index.html`).
 
 ### Hébergement web
 
@@ -108,6 +161,23 @@ Le projet est entièrement statique et peut être hébergé sur n'importe quel s
 - **Leaflet.js** (v1.9.4) : Bibliothèque de cartographie interactive
 - **CartoDB Light** : Fond de carte sobre et académique
 - **OpenStreetMap** : Données cartographiques
+
+## 📁 Structure du projet
+
+```
+itineraire-louis-xvi-saison-theatrale-1786/
+├── index.html              # Page principale
+├── css/
+│   └── styles.css          # Styles CSS
+├── js/
+│   └── script.js          # Logique JavaScript
+├── assets/
+│   └── data.json          # Données des lieux et théâtres
+├── scripts/
+│   ├── start-server.bat   # Script de démarrage Windows
+│   └── start-server.sh    # Script de démarrage Linux/Mac
+└── README.md              # Documentation
+```
 
 ## 📊 Sources des données
 

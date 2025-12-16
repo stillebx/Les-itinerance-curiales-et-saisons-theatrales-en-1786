@@ -1,0 +1,612 @@
+{
+  "theatres": [
+    {
+      "id": "theatre-aile-neuve",
+      "name": "Théâtre de l'Aile neuve",
+      "lat": 48.8048,
+      "lng": 2.1204,
+      "category": "theatres",
+      "details": "Construction du théâtre de l'Aile neuve par Louis XVI et Marie-Antoinette au début de l'année 1786.",
+      "history": "Ce théâtre fut édifié pour remplacer l'ancien Opéra royal jugé trop grand et coûteux à chauffer."
+    },
+    {
+      "id": "theatre-trianon",
+      "name": "Théâtre de la Reine à Trianon",
+      "lat": 48.81599895241052,
+      "lng": 2.1080872182578734,
+      "category": "theatres",
+      "details": "Le théâtre de la Reine à Trianon, lieu privilégié des représentations privées de Marie-Antoinette.",
+      "history": "Achevé en 1780, ce petit théâtre de 250 places permettait à la Reine de jouer elle-même la comédie.",
+      "latlngVerified": true
+    },
+    {
+      "id": "theatre-fontainebleau",
+      "name": "Théâtre de Fontainebleau",
+      "lat": 48.402152709043285,
+      "lng": 2.698026365177887,
+      "category": "theatres",
+      "details": "Le Théâtre de Fontainebleau, salle des spectacles de la cour durant la saison d'automne.",
+      "history": "La salle de spectacle du château de Fontainebleau accueillait chaque automne les représentations données par les troupes parisiennes."
+    }
+  ],
+  "places": [
+    {
+      "id": "fontainebleau",
+      "name": "Fontainebleau",
+      "lat": 48.4021036603463,
+      "lng": 2.699103021606424,
+      "category": "fontainebleau",
+      "visitDates": ["17861011","17861012","17861013","17861014","17861015","17861016","17861017","17861018","17861019","17861020","17861021","17861022","17861023","17861024","17861025","17861026","17861027","17861028","17861029","17861030","17861031","17861101","17861102","17861103","17861104","17861105","17861106","17861107","17861108","17861109","17861110","17861111","17861112","17861113","17861114","17861115"],
+      "details": "Résidence principale de la saison d'automne. Représentation d'Azémire de M.-J. Chénier le 4 novembre 1786.",
+      "history": "Depuis François Ier, Fontainebleau accueillait la cour chaque automne pour la saison de chasse.",
+      "latlngVerified": true
+    },
+    {
+      "id": "avon",
+      "name": "Avon",
+      "lat": 48.4048867,
+      "lng": 2.7207225,
+      "category": "fontainebleau",
+      "visitDates": ["17861026","17861104","17861108"]
+    },
+    {
+      "id": "chailly",
+      "name": "Chailly-en-Bière",
+      "lat": 48.4669449,
+      "lng": 2.608877,
+      "category": "fontainebleau",
+      "visitDates": ["17861027","17861110"]
+    },
+    {
+      "id": "pringy",
+      "name": "Pringy",
+      "lat": 48.521567,
+      "lng": 2.5587478,
+      "category": "fontainebleau",
+      "visitDates": ["17861018"]
+    },
+    {
+      "id": "fontaine-le-port",
+      "name": "Fontaine-le-Port",
+      "lat": 48.4867207,
+      "lng": 2.757027,
+      "category": "fontainebleau",
+      "visitDates": ["17861021"]
+    },
+    {
+      "id": "lieusaint",
+      "name": "Lieusaint",
+      "lat": 48.6316608,
+      "lng": 2.5514783,
+      "category": "fontainebleau",
+      "visitDates": ["17861023"]
+    },
+    {
+      "id": "combs",
+      "name": "Combs-la-Ville",
+      "lat": 48.6646994,
+      "lng": 2.564877,
+      "category": "fontainebleau",
+      "visitDates": ["17861023"]
+    },
+    {
+      "id": "mandres",
+      "name": "Mandres-les-Roses",
+      "lat": 48.7022193,
+      "lng": 2.5428063,
+      "category": "fontainebleau",
+      "visitDates": ["17861030"]
+    },
+    {
+      "id": "villiers-orge",
+      "name": "Villiers-sur-Orge",
+      "lat": 48.6585041,
+      "lng": 2.3010786,
+      "category": "fontainebleau",
+      "visitDates": ["17861110"]
+    },
+    {
+      "id": "boissy",
+      "name": "Boissy-Saint-Léger",
+      "lat": 48.7479193,
+      "lng": 2.5124717,
+      "category": "fontainebleau",
+      "visitDates": ["17861122"]
+    },
+    {
+      "id": "versailles",
+      "name": "Versailles",
+      "lat": 48.80452438239178,
+      "lng": 2.1215883760563514,
+      "category": "versailles",
+      "visitDates": ["17860101","17860102","17860103","17860104","17860105","17860106","17860107","17860108","17860109","17860110","17860111","17860112","17860113","17860114","17860115","17860116","17860117","17860118","17860119","17860120","17860121","17860122","17860123","17860124","17860125","17860126","17860127","17860128","17860129","17860130","17860131","17860201","17860202","17860203","17860204","17860205","17860206","17860207","17860208","17860209","17860210","17860211","17860212","17860213","17860214","17860215","17860216","17860217","17860218","17860219","17860220","17860221","17860222","17860223","17860224","17860225","17860226","17860227","17860228","17860301","17860302","17860303","17860304","17860305","17860306","17860307","17860308","17860309","17860310","17860311","17860312","17860313","17860314","17860315","17860316","17860317","17860318","17860319","17860320","17860321","17860322","17860323","17860324","17860325","17860326","17860327","17860328","17860329","17860330","17860331","17860401","17860402","17860403","17860404","17860405","17860406","17860407","17860408","17860409","17860410","17860411","17860412","17860413","17860414","17860415","17860416","17860417","17860418","17860419","17860420","17860421","17860422","17860423","17860424","17860425","17860426","17860427","17860428","17860429","17860430","17860501","17860629","17860630","17860701","17860702","17860703","17860704","17860705","17860706","17860707","17860708","17860709","17860710","17860711","17860712","17860713","17860714","17860715","17860716","17860717","17860718","17860719","17860720","17860721","17860722","17860723","17860724","17860725","17860726","17860727","17860728","17860729","17860730","17860731","17860801","17860802","17860803","17860804","17860805","17860806","17860807","17860808","17860809","17860810","17860811","17860812","17860813","17860814","17860815","17860816","17860817","17860818","17860819","17860820","17860821","17860822","17860823","17860824","17860825","17860826","17860827","17860828","17860829","17860830","17860831","17860901","17860902","17860903","17860904","17860905","17860906","17860907","17860908","17860909","17860910","17860913","17860914","17860915","17860916","17860917","17860918","17860919","17860920","17860921","17860922","17860923","17860924","17860925","17860926","17860927","17860928","17860929","17860930","17861001","17861002","17861003","17861004","17861005","17861006","17861115","17861116","17861117","17861118","17861119","17861120","17861121","17861122","17861123","17861124","17861125","17861126","17861127","17861128","17861129","17861130","17861201","17861202","17861203","17861204","17861205","17861206","17861207","17861208","17861209","17861210","17861211","17861212","17861213","17861214","17861215","17861216","17861217","17861218","17861219","17861220","17861221","17861222","17861223","17861224","17861225","17861226","17861227","17861228","17861229","17861230","17861231"],
+      "details": "Résidence principale de la saison d'hiver (décembre à Pâques).",
+      "history": "Versailles était le cœur du pouvoir royal. En 1786, Louis XVI y fit construire un nouveau théâtre dans l'Aile neuve.",
+      "latlngVerified": true
+    },
+    {
+      "id": "fresnes",
+      "name": "Fresnes",
+      "lat": 48.7546687,
+      "lng": 2.3227967,
+      "category": "versailles",
+      "visitDates": ["17861127"]
+    },
+    {
+      "id": "verrieres",
+      "name": "Verrières-le-Buisson",
+      "lat": 48.7467819,
+      "lng": 2.2653844,
+      "category": "versailles",
+      "visitDates": ["17860407","17861202"]
+    },
+    {
+      "id": "villejuif",
+      "name": "Villejuif",
+      "lat": 48.7921098,
+      "lng": 2.3633048,
+      "category": "versailles",
+      "visitDates": ["17861204"]
+    },
+    {
+      "id": "bievres",
+      "name": "Bièvres",
+      "lat": 48.7547679,
+      "lng": 2.2170148,
+      "category": "versailles",
+      "visitDates": ["17861211"]
+    },
+    {
+      "id": "villeneuve-roi",
+      "name": "Villeneuve-le-Roi",
+      "lat": 48.7350308,
+      "lng": 2.4077003,
+      "category": "versailles",
+      "visitDates": ["17861218"]
+    },
+    {
+      "id": "glatigny",
+      "name": "Glatigny",
+      "lat": 49.4961667,
+      "lng": 1.8952663,
+      "category": "chasse",
+      "visitDates": ["17860102"]
+    },
+    {
+      "id": "trappes",
+      "name": "Trappes",
+      "lat": 48.7760957,
+      "lng": 1.9988356,
+      "category": "chasse",
+      "visitDates": ["17860104","17860502","17860826","17861125","17861229"]
+    },
+    {
+      "id": "st-germain",
+      "name": "Saint-Germain-en-Laye",
+      "lat": 48.89818870292155,
+      "lng": 2.0961399905175155,
+      "category": "chasse",
+      "visitDates": ["17860109","17860113","17860117","17860123","17860126","17860130","17860206","17860220","17860227","17860306","17860313","17860320","17860327","17860410","17860417","17860424","17860501","17860708","17860715","17860722","17860729"],
+      "history": "Ancienne résidence royale, Saint-Germain-en-Laye conservait une importance pour la chasse dans ses forêts.",
+      "latlngVerified": true
+    },
+    {
+      "id": "rocquencourt",
+      "name": "Rocquencourt",
+      "lat": 48.833333,
+      "lng": 2.1063004,
+      "category": "chasse",
+      "visitDates": ["17860124","17860222","17860310","17861227"]
+    },
+    {
+      "id": "la-celle",
+      "name": "La Celle-Saint-Cloud",
+      "lat": 48.85197291650158,
+      "lng": 2.1405906946648714,
+      "category": "chasse",
+      "visitDates": ["17860213","17860322","17860331","17860421","17861230"],
+      "latlngVerified": true
+    },
+    {
+      "id": "plaisir",
+      "name": "Plaisir",
+      "lat": 48.817399,
+      "lng": 1.9476363,
+      "category": "chasse",
+      "visitDates": ["17860424","17860506","17860701","17860717","17860909"]
+    },
+    {
+      "id": "st-remy",
+      "name": "Saint-Rémy-lès-Chevreuse",
+      "lat": 48.7054888,
+      "lng": 2.071109,
+      "category": "chasse",
+      "visitDates": ["17860428","17860712","17861006"]
+    },
+    {
+      "id": "guyancourt",
+      "name": "Guyancourt",
+      "lat": 48.7709414,
+      "lng": 2.0706084,
+      "category": "chasse",
+      "visitDates": ["17860502"]
+    },
+    {
+      "id": "rambouillet",
+      "name": "Rambouillet",
+      "lat": 48.64557550080015,
+      "lng": 1.8174080033846405,
+      "category": "chasse",
+      "visitDates": ["17860502","17860503","17860504","17860505","17860506","17860507","17860508","17860509","17860510","17860511","17860512","17860513","17860514","17860515","17860516","17860517","17860518","17860519","17860520","17860521","17860522","17860523","17860524","17860525","17860526","17860527","17860528","17860529","17860530","17860531","17860601","17860602","17860603","17860604","17860605","17860606","17860607","17860608","17860609","17860610","17860611","17860612","17860613","17860614","17860615","17860616","17860617","17860618","17860619","17860620","17861002"],
+      "details": "Résidence de chasse acquise par Louis XVI en 1783.",
+      "history": "Louis XVI acquit le domaine de Rambouillet en 1783 pour ses forêts giboyeuses.",
+      "latlngVerified": true
+    },
+    {
+      "id": "perray",
+      "name": "Le Perray-en-Yvelines",
+      "lat": 48.715175675738564,
+      "lng": 1.8505748293593174,
+      "category": "chasse",
+      "visitDates": ["17860518","17860526","17860531","17860602","17860606","17860609","17860613","17860616","17860620"],
+      "details": "Pavillon de chasse de Saint-Hubert.",
+      "history": "Le pavillon de Saint-Hubert, construit sous Louis XV, était l'un des rendez-vous de chasse favoris.",
+      "latlngVerified": true
+    },
+    {
+      "id": "dourdan",
+      "name": "Dourdan",
+      "lat": 48.52990762745118,
+      "lng": 2.011372153086719,
+      "category": "chasse",
+      "visitDates": ["17860522"],
+      "latlngVerified": true
+    },
+    {
+      "id": "gazeran",
+      "name": "Gazeran",
+      "lat": 48.6348196,
+      "lng": 1.771981,
+      "category": "chasse",
+      "visitDates": ["17860828"]
+    },
+    {
+      "id": "orsay",
+      "name": "Orsay",
+      "lat": 48.697658468786294,
+      "lng": 2.1899877024861154,
+      "category": "chasse",
+      "visitDates": ["17860829"],
+      "latlngVerified": true
+    },
+    {
+      "id": "ste-mesme",
+      "name": "Sainte-Mesme",
+      "lat": 48.531728,
+      "lng": 1.9606419,
+      "category": "chasse",
+      "visitDates": ["17860901","17860905"]
+    },
+    {
+      "id": "st-nom",
+      "name": "Saint-Nom-la-Bretèche",
+      "lat": 48.8641009,
+      "lng": 2.0205241,
+      "category": "chasse",
+      "visitDates": ["17860902"]
+    },
+    {
+      "id": "villepreux",
+      "name": "Villepreux",
+      "lat": 48.8323013,
+      "lng": 2.007049,
+      "category": "chasse",
+      "visitDates": ["17860907"]
+    },
+    {
+      "id": "arcueil",
+      "name": "Arcueil",
+      "lat": 48.8064996,
+      "lng": 2.3366502,
+      "category": "chasse",
+      "visitDates": ["17860915"]
+    },
+    {
+      "id": "saclay",
+      "name": "Saclay",
+      "lat": 48.7305162,
+      "lng": 2.172576,
+      "category": "chasse",
+      "visitDates": ["17860918"]
+    },
+    {
+      "id": "poigny",
+      "name": "Poigny-la-Forêt",
+      "lat": 48.6758342,
+      "lng": 1.752986,
+      "category": "chasse",
+      "visitDates": ["17860919","17860927","17861002"]
+    },
+    {
+      "id": "rungis",
+      "name": "Rungis",
+      "lat": 48.7484048,
+      "lng": 2.3472665,
+      "category": "chasse",
+      "visitDates": ["17860920"]
+    },
+    {
+      "id": "chevilly",
+      "name": "Chevilly-Larue",
+      "lat": 48.7714153,
+      "lng": 2.3469255,
+      "category": "chasse",
+      "visitDates": ["17860922","17861127"]
+    },
+    {
+      "id": "thiais",
+      "name": "Thiais",
+      "lat": 48.7643664,
+      "lng": 2.391024,
+      "category": "chasse",
+      "visitDates": ["17860930"]
+    },
+    {
+      "id": "creteil",
+      "name": "Créteil",
+      "lat": 48.7771486,
+      "lng": 2.4530731,
+      "category": "chasse",
+      "visitDates": ["17861003","17861221"]
+    },
+    {
+      "id": "davron",
+      "name": "Davron",
+      "lat": 48.8651611,
+      "lng": 1.9466425,
+      "category": "chasse",
+      "visitDates": ["17861005"]
+    },
+    {
+      "id": "boissiere",
+      "name": "La Boissière-École",
+      "lat": 48.6818831,
+      "lng": 1.6415102,
+      "category": "chasse",
+      "visitDates": ["17861017"]
+    },
+    {
+      "id": "gournay",
+      "name": "Gournay-sur-Marne",
+      "lat": 48.8598434,
+      "lng": 2.576913,
+      "category": "chasse",
+      "visitDates": ["17860819"]
+    },
+    {
+      "id": "montrouge",
+      "name": "Montrouge",
+      "lat": 48.8188544,
+      "lng": 2.3194375,
+      "category": "chasse",
+      "visitDates": ["17860822"]
+    },
+    {
+      "id": "poissy",
+      "name": "Poissy",
+      "lat": 48.9274192,
+      "lng": 2.0426301,
+      "category": "chasse",
+      "visitDates": ["17860811"]
+    },
+    {
+      "id": "jouy-josas",
+      "name": "Jouy-en-Josas",
+      "lat": 48.76464,
+      "lng": 2.1684529,
+      "category": "chasse",
+      "visitDates": ["17860805"]
+    },
+    {
+      "id": "chambourcy",
+      "name": "Chambourcy",
+      "lat": 48.9058999,
+      "lng": 2.0396454,
+      "category": "chasse",
+      "visitDates": ["17860128","17860807","17860817"]
+    },
+    {
+      "id": "meudon",
+      "name": "Meudon",
+      "lat": 48.80516100732402,
+      "lng": 2.2311832643852987,
+      "category": "residences",
+      "visitDates": ["17860120"],
+      "history": "Ancienne résidence du Grand Dauphin, fils de Louis XIV, Meudon servait de lieu de promenade et de chasse.",
+      "latlngVerified": true
+    },
+    {
+      "id": "st-cloud",
+      "name": "Saint-Cloud",
+      "lat": 48.837915821635335,
+      "lng": 2.217378018216841,
+      "category": "residences",
+      "visitDates": ["17860403"],
+      "details": "Résidence acquise par Marie-Antoinette en 1785.",
+      "history": "Marie-Antoinette acheta le château de Saint-Cloud en 1785 pour disposer d'une résidence personnelle proche de Paris.",
+      "latlngVerified": true
+    },
+    {
+      "id": "jouy-moutier",
+      "name": "Jouy-le-Moutier",
+      "lat": 49.0116,
+      "lng": 2.03194,
+      "category": "residences",
+      "visitDates": ["17860406","17860504","17860703"]
+    },
+    {
+      "id": "magny",
+      "name": "Magny-les-Hameaux",
+      "lat": 48.724051,
+      "lng": 2.0839562,
+      "category": "residences",
+      "visitDates": ["17860415"]
+    },
+    {
+      "id": "paris",
+      "name": "Paris",
+      "lat": 48.8588897,
+      "lng": 2.320041,
+      "category": "residences",
+      "visitDates": ["17860427","17860928"],
+      "details": "Visites officielles du roi à Paris.",
+      "history": "Louis XVI se rendait rarement à Paris, préférant Versailles."
+    },
+    {
+      "id": "compiegne",
+      "name": "Compiègne",
+      "lat": 49.419484872382256,
+      "lng": 2.8312191468761823,
+      "category": "residences",
+      "visitDates": ["17860911","17860912","17860913"],
+      "history": "Compiègne était traditionnellement la résidence d'été de la cour.",
+      "latlngVerified": true
+    },
+    {
+      "id": "st-denis",
+      "name": "Saint-Denis",
+      "lat": 48.935802370505805,
+      "lng": 2.359374100616326,
+      "category": "residences",
+      "visitDates": ["17860910"],
+      "history": "La basilique Saint-Denis abritait les tombeaux des rois de France.",
+      "latlngVerified": true
+    },
+    {
+      "id": "choisy",
+      "name": "Choisy-le-Roi",
+      "lat": 48.76308593196671,
+      "lng": 2.4088304498412256,
+      "category": "residences",
+      "visitDates": ["17861006","17861007","17861008","17861009","17861010","17861218","17861221"],
+      "latlngVerified": true
+    },
+    {
+      "id": "soisy",
+      "name": "Soisy-sur-Seine",
+      "lat": 48.6502928,
+      "lng": 2.4490991,
+      "category": "residences",
+      "visitDates": ["17861006","17861130","17861207"]
+    },
+    {
+      "id": "brunoy",
+      "name": "Brunoy",
+      "lat": 48.6979312,
+      "lng": 2.5044613,
+      "category": "residences",
+      "visitDates": ["17861008","17861030","17861130","17861207"]
+    },
+    {
+      "id": "villeneuve-st-georges",
+      "name": "Villeneuve-Saint-Georges",
+      "lat": 48.7305272,
+      "lng": 2.44782,
+      "category": "residences",
+      "visitDates": ["17861007","17861008"]
+    },
+    {
+      "id": "hay",
+      "name": "L'Haÿ-les-Roses",
+      "lat": 48.7790514,
+      "lng": 2.3373021,
+      "category": "residences",
+      "visitDates": ["17861009","17861204"]
+    },
+    {
+      "id": "chandai",
+      "name": "Chandai",
+      "lat": 48.7534847,
+      "lng": 0.740002,
+      "category": "normandie",
+      "visitDates": ["17860621"],
+      "details": "Étape du voyage vers Cherbourg."
+    },
+    {
+      "id": "harcourt",
+      "name": "Harcourt",
+      "lat": 49.173938600768544,
+      "lng": 0.7863978614955963,
+      "category": "normandie",
+      "visitDates": ["17860621","17860622"],
+      "latlngVerified": true
+    },
+    {
+      "id": "cherbourg",
+      "name": "Cherbourg-en-Cotentin",
+      "lat": 49.655778138925584,
+      "lng": -1.63536823180084,
+      "category": "normandie",
+      "visitDates": ["17860622","17860623","17860624","17860625","17860626"],
+      "details": "Visite des travaux de la digue et du port militaire. Point culminant du voyage.",
+      "history": "Le voyage de Louis XVI à Cherbourg en juin 1786 fut l'un des rares déplacements du roi en province.",
+      "latlngVerified": true
+    },
+    {
+      "id": "montmartin",
+      "name": "Montmartin-en-Graignes",
+      "lat": 49.2751306,
+      "lng": -1.1458554,
+      "category": "normandie",
+      "visitDates": ["17860626"]
+    },
+    {
+      "id": "caen",
+      "name": "Caen",
+      "lat": 49.186695373508485,
+      "lng": -0.36301474616409674,
+      "category": "normandie",
+      "visitDates": ["17860626","17860627"],
+      "history": "Caen accueillit Louis XVI avec enthousiasme lors de son passage.",
+      "latlngVerified": true
+    },
+    {
+      "id": "honfleur",
+      "name": "Honfleur",
+      "lat": 49.4197222,
+      "lng": 0.2338889,
+      "category": "normandie",
+      "visitDates": ["17860627"]
+    },
+    {
+      "id": "le-havre",
+      "name": "Le Havre",
+      "lat": 49.4857290969773,
+      "lng": 0.10698682195733893,
+      "category": "normandie",
+      "visitDates": ["17860627","17860628"],
+      "history": "Port majeur du commerce atlantique, Le Havre était essentiel pour le commerce colonial français.",
+      "latlngVerified": true
+    },
+    {
+      "id": "rouen",
+      "name": "Rouen",
+      "lat": 49.4404591,
+      "lng": 1.0939658,
+      "category": "normandie",
+      "visitDates": ["17860628"],
+      "history": "Capitale de la Normandie, Rouen était la deuxième ville du royaume par sa population."
+    },
+    {
+      "id": "gaillon",
+      "name": "Gaillon",
+      "lat": 49.160903871171996,
+      "lng": 1.329870183161747,
+      "category": "normandie",
+      "visitDates": ["17860628","17860629"],
+      "details": "Dernière étape avant le retour à Versailles.",
+      "latlngVerified": true
+    }
+  ]
+}
+
